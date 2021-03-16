@@ -3,3 +3,13 @@ public class ArithmeticsDiff implements IArithmeticsDiff{
         return A-B;
     }
 }
+
+/*
+    Tell me why, tell me why, tell me why
+    Tell me why
+    No you never cried to them,
+    Just to your soul
+    No you never cried to them,
+    Just to your soul
+    Tell me why, tell me why, tell me why, tell me why
+*/
