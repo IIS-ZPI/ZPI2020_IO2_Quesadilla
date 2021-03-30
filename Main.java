@@ -11,4 +11,6 @@ class Main {
     System.out.println("LogicalInsanity https://github.com/LogicalInsanity");
     System.out.println("Wiktor Kania https://github.com/Roller23");
   }
+  // this is the greatest feature that has ever been created
+  // it does absolutely nothing
 }
