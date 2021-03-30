@@ -13,6 +13,4 @@ class Main {
     //Don't trust him, he uses 2 spaces indent in Java
     System.out.println("Wiktor Kania https://github.com/Roller23");
   }
-  // this is the greatest feature that has ever been created
-  // it does absolutely nothing
 }
