@@ -1,5 +1,4 @@
 class Main {
-  // THIS COMMENT WILL DISAPPEAR IN 24 HOURS CLICK TO GET -80% OFF-
   // why 2 spaces?
   public static void main(String[] args) {
     //really? maybe do 3 next time?
