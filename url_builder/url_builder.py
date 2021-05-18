@@ -77,11 +77,10 @@ def get_avg_currency_rate(currency_code: CurrencyCode, time_range: TimeRange, **
     :return: return json response as python dictionary
 
     Optional keyword arguments:
-    :param format_arg: json set to default format
     :param table_type: average exchange rate (Table A) as default
     """
 
-    format_arg = kwargs.get('format_arg') or '?format=json'
+    format_arg = '?format=json'
     table_type = kwargs.get('table_type') or TableType.AVERAGE_EXCHANGE_RATE
     base_url = 'http://api.nbp.pl/api/exchangerates/rates'
 
