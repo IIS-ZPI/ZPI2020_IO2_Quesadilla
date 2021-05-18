@@ -25,11 +25,11 @@ def get_currency_statistical_measures(currency_code: CurrencyCode, time_range: T
 
 def get_currencies_rates_distribution(first_currency: CurrencyCode, second_currency: CurrencyCode, time_range: TimeRange) -> Dict:
     """
-    This function is used to get median, mode, standard deviation and coefficient of variation of currency
-    from NBP data.
-    :param currency_code: one of the currency included in CurrencyCode
-    :param time_range: one of the time interval included in TimeRange
-    :return: dictionary with result :)
+    This function calculates difference (in percentage %) from one session to another session for chosen currencies and
+     :param first_currency:
+     :param second_currency:
+     :param time_range:
+     :return: dictionary of currencies with sessions' dates and difference values
     """
     if first_currency.value == second_currency.value:
         raise ValueError("Currencies' codes should not be equal")
