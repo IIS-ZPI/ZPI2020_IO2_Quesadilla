@@ -1,6 +1,6 @@
 import numpy as np
 from scipy import stats
-from typing import Dict
+from typing import Dict, Tuple
 from url_builder.url_builder import CurrencyCode, TimeRange, get_avg_currency_rate
 
 
@@ -23,12 +23,20 @@ def get_currency_statistical_measures(currency_code: CurrencyCode, time_range: T
     return measures
 
 
+def _calc_sessions_differences(currency_data: Dict) -> Dict:
+    handler = dict()
+    for previous_session_row, session_row in zip(currency_data.get('rates'), currency_data.get('rates')[1:]):
+        handler[session_row.get('effectiveDate')] = 100 - (
+                    session_row.get('mid') * 100 / previous_session_row.get('mid'))
+    return handler
+
+
 def get_currencies_rates_distribution(first_currency: CurrencyCode, second_currency: CurrencyCode, time_range: TimeRange) -> Dict:
     """
     This function calculates difference (in percentage %) from one session to another session for chosen currencies and
-     :param first_currency:
-     :param second_currency:
-     :param time_range:
+     :param first_currency: Code of the very first currency
+     :param second_currency: Code of second currency (must vary from the first one)
+     :param time_range: Time between month and quarter
      :return: dictionary of currencies with sessions' dates and difference values
     """
     if first_currency.value == second_currency.value:
@@ -41,12 +49,29 @@ def get_currencies_rates_distribution(first_currency: CurrencyCode, second_curre
     currencies_distribution = dict()
 
     for currency_data in (currency_data_1, currency_data_2):
-        handler = dict()
-        for previous_session_row, session_row in zip(currency_data.get('rates'), currency_data.get('rates')[1:]):
-            handler[session_row.get('effectiveDate')] = 100 - (session_row.get('mid') * 100 / previous_session_row.get('mid'))
-        currencies_distribution[currency_data.get('code')] = handler
-
+        currencies_distribution[currency_data.get('code')] = _calc_sessions_differences(currency_data)
     return currencies_distribution
+
+
+def get_session_changes_over_time(currency_code: CurrencyCode, time_range: TimeRange, bias=10**(-5)) -> Tuple[int, int, int]:
+    """
+    This function returns upward, downward and unchanged sessions counters
+    :param currency_code: Code of currency to check
+    :param time_range: Time of intrest
+    :param bias: values between <-bias, bias> are treated as there's no change
+    :return: growth, loss and no change counter
+    """
+    currency_distribution = _calc_sessions_differences(get_avg_currency_rate(currency_code, time_range))
+    growth_counter = loss_counter = no_change_counter = 0
+
+    for record in currency_distribution.values():
+        if -bias < record < bias:
+            no_change_counter += 1
+        elif record < 0:
+            loss_counter += 1
+        else:
+            growth_counter += 1
+    return growth_counter, loss_counter, no_change_counter
 
 
 if __name__ == '__main__':
@@ -61,3 +86,7 @@ if __name__ == '__main__':
     print(f'Australian currency rate differences over {TimeRange.LAST_QUARTER.value} days')
     for date, value in australian_code.items():
         print(f'At day {date} currency changed come to {value:.2} %')
+
+    print(f"American currency's upward, downward and unchanged session over {TimeRange.LAST_WEEK.value} days")
+    growth, loss, no_change = get_session_changes_over_time(CurrencyCode.AMERICAN_DOLLAR, TimeRange.LAST_WEEK)
+    print(f'Growth: {growth}, loss: {loss}, no change: {no_change}')
