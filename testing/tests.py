@@ -1,13 +1,15 @@
-def test_sum():
-    assert sum([1, 2, 3]) == 6, "Should be 6"
+import sys
+sys.path.insert(0, "./")
+from url_builder.url_builder import CurrencyCode, TimeRange, get_avg_currency_rate
 
-def test_sum_tuple():
-    assert sum((1, 2, 2)) == 6, "Should be 6"
+def t1_get_avg_currency_rate():
+	get_avg_currency_rate(CurrencyCode.AMERICAN_DOLLAR, TimeRange.LAST_WEEK)
+	assert sum([1, 2, 3]) == 6, "Should be 6"
+
 
 def test_everything():
-    test_sum()
-    test_sum_tuple()
-    print("Everything passed")
+	t1_get_avg_currency_rate()
+	print("Everything passed")
 
 
 test_everything()
