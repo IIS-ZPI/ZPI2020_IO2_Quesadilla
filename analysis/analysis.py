@@ -26,8 +26,7 @@ def get_currency_statistical_measures(currency_code: CurrencyCode, time_range: T
 def _calc_sessions_differences(currency_data: Dict) -> Dict:
     handler = dict()
     for previous_session_row, session_row in zip(currency_data.get('rates'), currency_data.get('rates')[1:]):
-        handler[session_row.get('effectiveDate')] = 100 - (
-                    session_row.get('mid') * 100 / previous_session_row.get('mid'))
+        handler[session_row.get('effectiveDate')] = ((session_row.get('mid') / previous_session_row.get('mid')) - 1) * 100
     return handler
 
 
@@ -57,7 +56,7 @@ def get_session_changes_over_time(currency_code: CurrencyCode, time_range: TimeR
     """
     This function returns upward, downward and unchanged sessions counters
     :param currency_code: Code of currency to check
-    :param time_range: Time of intrest
+    :param time_range: Time of interest
     :param bias: values between <-bias, bias> are treated as there's no change
     :return: growth, loss and no change counter
     """
@@ -83,7 +82,7 @@ if __name__ == '__main__':
     for date, value in american_values.items():
         print(f'At day {date} currency changed come to {value:.2} %')
 
-    print(f'Australian currency rate differences over {TimeRange.LAST_QUARTER.value} days')
+    print(f'Euro currency rate differences over {TimeRange.LAST_QUARTER.value} days')
     for date, value in australian_code.items():
         print(f'At day {date} currency changed come to {value:.2} %')
 
