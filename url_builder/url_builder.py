@@ -1,10 +1,19 @@
 from datetime import datetime, timedelta
-from enum import Enum
+from enum import Enum, EnumMeta
 from typing import Dict
 import requests
 
 
-class CurrencyCode(Enum):
+class ContainsEnum(EnumMeta):
+    def __contains__(cls, item):
+        try:
+            cls(item)
+        except ValueError:
+            return False
+        return True
+
+
+class CurrencyCode(Enum, metaclass=ContainsEnum):
     """
     Represents NBP currencies according to https://www.nbp.pl/kursy/kursya.html
     """
@@ -54,7 +63,7 @@ class TableType(Enum):
     BID_ASK_RATE = 'c'
 
 
-class TimeRange(Enum):
+class TimeRange(Enum, metaclass=ContainsEnum):
     """
     Represents days to subtract from today (end_date) to get start_date
     Used for extracting NBP currencies' records

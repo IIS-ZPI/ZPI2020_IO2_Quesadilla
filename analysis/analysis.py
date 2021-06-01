@@ -82,7 +82,7 @@ if __name__ == '__main__':
     for date, value in american_values.items():
         print(f'At day {date} currency changed come to {value:.2} %')
 
-    print(f'Euro currency rate differences over {TimeRange.LAST_QUARTER.value} days')
+    print(f'Australian currency rate differences over {TimeRange.LAST_QUARTER.value} days')
     for date, value in australian_code.items():
         print(f'At day {date} currency changed come to {value:.2} %')
 
