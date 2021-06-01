@@ -19,7 +19,7 @@ def get_functionality_from_user() -> Action:
     1 - wyznaczenie ilości sesji wzrostowych / spadkowych / bez zmian (dla wybranej waluty)
     2 - miary statystyczne: miediana, dominanta, odchylenie standardowe i współczynnik zmienności (dla wybranej waluty)
     3 - rozkład zmian miesięcznych i kwartalnych w dowolnych wybranych parach walutowych
-    4 - wyjść z systemu\n> """)))
+    4 - wyjdź z systemu\n> """)))
     except ValueError:
         action = Action.INCORRECT
     return action
@@ -112,7 +112,7 @@ if __name__ == "__main__":
             for currency_name, currency_values in distribution.items():
                 print(f'Różnice kursowe {currency_name} przez ostatnie {time.value} dni')
                 for date, value in currency_values.items():
-                    print(f'{date} zmiana na {value:.2}%')
+                    print(f"{date} zmiana {'w górę' if value > 0. else 'w dół'} o {value:.2}%")
 
         else:
             print('Niepoprawna opcja! Proszę wybrać ponownie.')
