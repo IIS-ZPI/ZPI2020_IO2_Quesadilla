@@ -87,6 +87,9 @@ def get_avg_currency_rate(currency_code: CurrencyCode, time_range: TimeRange, **
 
     Optional keyword arguments:
     :param table_type: average exchange rate (Table A) as default
+    Only for testing purposes:
+    :param start_date: date in format '%YYYY-%mm-%dd' to specify first day of interest
+    :param end_date: date in format '%YYYY-%mm-%dd' to specify last day of interest
     """
 
     format_arg = '?format=json'
@@ -94,8 +97,8 @@ def get_avg_currency_rate(currency_code: CurrencyCode, time_range: TimeRange, **
     base_url = 'http://api.nbp.pl/api/exchangerates/rates'
 
     date_format = '%Y-%m-%d'
-    end_date = datetime.today().strftime(date_format)
-    start_date = (datetime.today() - timedelta(days=time_range.value)).strftime(date_format)
+    end_date = kwargs.get('end_date') or datetime.today().strftime(date_format)
+    start_date = kwargs.get('start_date') or (datetime.today() - timedelta(days=time_range.value)).strftime(date_format)
 
     url = f'{base_url}/{table_type.value}/{currency_code.value}/{start_date}/{end_date}{format_arg}'
     return requests.get(url).json()
@@ -110,3 +113,7 @@ if __name__ == '__main__':
     for tr in TimeRange:
         print(f'TimeRange {tr}')
         print(get_avg_currency_rate(CurrencyCode.AMERICAN_DOLLAR, tr))
+
+    print('Testing only')
+    print(get_avg_currency_rate(CurrencyCode.EURO, None, start_date='2020-01-01', end_date='2020-01-31'))
+    print(get_avg_currency_rate(CurrencyCode.AUSTRALIAN_DOLLAR, None, start_date='2020-01-01', end_date='2020-12-31'))
