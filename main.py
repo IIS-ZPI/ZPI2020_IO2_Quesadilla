@@ -48,13 +48,15 @@ def get_period_of_time_from_user(**kwargs) -> TimeRange:
     return lookup_times.get(time_range)
 
 
-def get_currency_from_user() -> CurrencyCode:
+def get_currency_from_user(prompt='Proszę wybrać kod waluty. (By wyświelić dostępne waluty wpisz "/h")\n> ') -> CurrencyCode:
     chosen_code = 'NONE'
     while chosen_code.upper() not in CurrencyCode:
-        chosen_code = input('Proszę wybrać kod waluty. (By wyświelić dostępne waluty wpisz "/h")\n> ')
+        chosen_code = input(prompt)
         if '/h' == chosen_code:
             for cc in CurrencyCode:
                 print(f'{str(cc)[len("CurrencyCode."):]}, code: {cc.value}')
+        if chosen_code.upper() not in CurrencyCode:
+            print('Niepoprawny kod waluty')
     return CurrencyCode(chosen_code.upper())
 
 
@@ -81,8 +83,6 @@ if __name__ == "__main__":
             time = get_period_of_time_from_user()
             measurements = get_currency_statistical_measures(curr_code, time)
             print('-' * 50, f'\n{str(curr_code)[len("CurrencyCode."):]}:')
-            # for name, value in measurements.items():
-            #     print(f'{name} = {value}')
             print("miediana: " + str(measurements['median']))
             print("dominanta: " + str(measurements['mode'][0][0]))
             print("odchylenie standardowe: " + str(measurements['std']))
@@ -95,9 +95,11 @@ if __name__ == "__main__":
             time = None
             while True:
                 try:
-                    curr_code_1 = get_currency_from_user()
-                    curr_code_2 = get_currency_from_user()
-                    print(curr_code_1, curr_code_2)
+                    curr_code_1 = get_currency_from_user('Podaj kod pierwszej waluty. (By wyświelić dostępne waluty '
+                                                         'wpisz "/h")\n> ')
+                    curr_code_2 = get_currency_from_user('Podaj kod drugiej waluty. (By wyświelić dostępne waluty '
+                                                         'wpisz "/h")\n> ')
+
                     new_prompt = "Proszę wybrać za jaki okres trzeba wyświetlić statystyki. Za okres:\n1) 1 " \
                                  "miesiąca\n2) 1 kwartału\n> "
                     time = get_period_of_time_from_user(time_range={1: TimeRange.LAST_MONTH, 2: TimeRange.LAST_QUARTER},
