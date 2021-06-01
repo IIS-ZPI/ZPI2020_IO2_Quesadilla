@@ -15,7 +15,7 @@ class Action(IntEnum):
 
 def get_functionality_from_user() -> Action:
     try:
-        action = Action(int(input("""Proszę wybrać analizę statystyczną:
+        action = Action(int(input("""\nProszę wybrać analizę statystyczną:
     1 - wyznaczenie ilości sesji wzrostowych / spadkowych / bez zmian (dla wybranej waluty)
     2 - miary statystyczne: miediana, dominanta, odchylenie standardowe i współczynnik zmienności (dla wybranej waluty)
     3 - rozkład zmian miesięcznych i kwartalnych w dowolnych wybranych parach walutowych
@@ -50,12 +50,12 @@ def get_period_of_time_from_user(**kwargs) -> TimeRange:
 
 def get_currency_from_user() -> CurrencyCode:
     chosen_code = 'NONE'
-    while chosen_code not in CurrencyCode:
+    while chosen_code.upper() not in CurrencyCode:
         chosen_code = input('Proszę wybrać kod waluty. (By wyświelić dostępne waluty wpisz "/h")\n> ')
         if '/h' == chosen_code:
             for cc in CurrencyCode:
                 print(f'{str(cc)[len("CurrencyCode."):]}, code: {cc.value}')
-    return CurrencyCode(chosen_code)
+    return CurrencyCode(chosen_code.upper())
 
 
 if __name__ == "__main__":
@@ -72,8 +72,8 @@ if __name__ == "__main__":
             time = get_period_of_time_from_user()
             growth, loss, no_change = get_session_changes_over_time(curr_code, time)
             print('-' * 50,
-                  f'\n{str(curr_code)[len("CurrencyCode."):]}: growth {growth}, loss {loss}, no_change {no_change}'
-                  f' over {time.value} days\n',
+                  f'\n{str(curr_code)[len("CurrencyCode."):]}:\nilości sesji wzrostowych:  {growth},\nilości sesji spadkowych: {loss},\nilości sesji bez zmian:  {no_change}'
+                  f'\nprzez ostatnie {time.value} dni\n',
                   '-' * 50)
 
         elif Action.STATISTIC_MEASURES == user_input:
@@ -81,8 +81,13 @@ if __name__ == "__main__":
             time = get_period_of_time_from_user()
             measurements = get_currency_statistical_measures(curr_code, time)
             print('-' * 50, f'\n{str(curr_code)[len("CurrencyCode."):]}:')
-            for name, value in measurements.items():
-                print(f'{name} = {value}')
+            # for name, value in measurements.items():
+            #     print(f'{name} = {value}')
+            print("miediana: " + str(measurements['median']))
+            print("dominanta: " + str(measurements['mode'][0][0]))
+            print("odchylenie standardowe: " + str(measurements['std']))
+            print("współczynnik zmienności: " + str(measurements['cv']))
+            print(f'przez ostatnie {time.value} dni')
             print('-' * 50)
 
         elif Action.CURRENCY_DISTRIBUTION_RATE == user_input:
@@ -105,9 +110,9 @@ if __name__ == "__main__":
                 break
 
             for currency_name, currency_values in distribution.items():
-                print(f'{currency_name} rate differences over {time.value} days')
+                print(f'Różnice kursowe {currency_name} przez ostatnie {time.value} dni')
                 for date, value in currency_values.items():
-                    print(f'At day {date} currency changed come to {value:.2} %')
+                    print(f'{date} zmiana na {value:.2}%')
 
         else:
             print('Niepoprawna opcja! Proszę wybrać ponownie.')
