@@ -105,7 +105,7 @@ def get_avg_currency_rate(currency_code: CurrencyCode, time_range: TimeRange, **
 
     return_value = requests.get(url).json()
 
-    if return_value == null:
+    if return_value == {}:
         raise Response404Error
 
     return return_value

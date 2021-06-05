@@ -49,7 +49,8 @@ def get_period_of_time_from_user(**kwargs) -> TimeRange:
     return lookup_times.get(time_range)
 
 
-def get_currency_from_user(prompt='Proszę wybrać kod waluty. (By wyświelić dostępne waluty wpisz "/h")\n> ') -> CurrencyCode:
+def get_currency_from_user(
+        prompt='Proszę wybrać kod waluty. (By wyświelić dostępne waluty wpisz "/h")\n> ') -> CurrencyCode:
     chosen_code = 'NONE'
     while chosen_code.upper() not in CurrencyCode:
         chosen_code = input(prompt)
@@ -97,15 +98,16 @@ if __name__ == "__main__":
                 time = None
                 while True:
                     try:
-                        curr_code_1 = get_currency_from_user('Podaj kod pierwszej waluty. (By wyświelić dostępne waluty '
-                                                             'wpisz "/h")\n> ')
+                        curr_code_1 = get_currency_from_user(
+                            'Podaj kod pierwszej waluty. (By wyświelić dostępne waluty '
+                            'wpisz "/h")\n> ')
                         curr_code_2 = get_currency_from_user('Podaj kod drugiej waluty. (By wyświelić dostępne waluty '
                                                              'wpisz "/h")\n> ')
 
                         new_prompt = "Proszę wybrać za jaki okres trzeba wyświetlić statystyki. Za okres:\n1) 1 " \
                                      "miesiąca\n2) 1 kwartału\n> "
-                        time = get_period_of_time_from_user(time_range={1: TimeRange.LAST_MONTH, 2: TimeRange.LAST_QUARTER},
-                                                            prompt=new_prompt)
+                        time = get_period_of_time_from_user(
+                            time_range={1: TimeRange.LAST_MONTH, 2: TimeRange.LAST_QUARTER}, prompt=new_prompt)
 
                         distribution = get_currencies_rates_distribution(curr_code_1, curr_code_2, time)
                     except ValueError:
@@ -122,6 +124,7 @@ if __name__ == "__main__":
                 print('Niepoprawna opcja! Proszę wybrać ponownie.')
 
         except Response404Error:
-            print("!!!\nprzepraszamy bardzo, w tym okresie nie ma żadnych danych do wyświetlenia\nprosimy wybrać inny okres\n")
+            print(
+                "!!!\nprzepraszamy bardzo, w tym okresie nie ma żadnych danych do wyświetlenia\nprosimy wybrać inny okres\n")
 
     print("Wyłączenie systemu")
