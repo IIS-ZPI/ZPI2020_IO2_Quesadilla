@@ -2,7 +2,7 @@ import numpy as np
 from scipy import stats
 from typing import Dict, Tuple
 from url_builder.url_builder import CurrencyCode, TimeRange, get_avg_currency_rate
-
+from custom_errors import Response404Error
 
 def get_currency_statistical_measures(currency_code: CurrencyCode, time_range: TimeRange, **kwargs) -> Dict:
     """
@@ -16,8 +16,7 @@ def get_currency_statistical_measures(currency_code: CurrencyCode, time_range: T
     :param start_date: date in format '%YYYY-%mm-%dd' to specify first day of interest
     :param end_date: date in format '%YYYY-%mm-%dd' to specify last day of interest
     """
-    currency_data = get_avg_currency_rate(currency_code, time_range, start_date=kwargs.get('start_date'),
-                                          end_date=kwargs.get('end_date'))
+    currency_data = get_avg_currency_rate(currency_code, time_range, start_date=kwargs.get('start_date'), end_date=kwargs.get('end_date'))
     currency_rates = [rate_info.get('mid') for rate_info in currency_data.get('rates')]
 
     measures = dict()
@@ -56,10 +55,8 @@ def get_currencies_rates_distribution(first_currency: CurrencyCode, second_curre
             raise ValueError(
                 f"Incorrect time range. Available range: <{TimeRange.LAST_MONTH}, {TimeRange.LAST_QUARTER}>")
 
-    currency_data_1 = get_avg_currency_rate(first_currency, time_range, start_date=kwargs.get('start_date'),
-                                            end_date=kwargs.get('end_date'))
-    currency_data_2 = get_avg_currency_rate(second_currency, time_range, start_date=kwargs.get('start_date'),
-                                            end_date=kwargs.get('end_date'))
+    currency_data_1 = get_avg_currency_rate(first_currency, time_range, start_date=kwargs.get('start_date'), end_date=kwargs.get('end_date'))
+    currency_data_2 = get_avg_currency_rate(second_currency, time_range, start_date=kwargs.get('start_date'), end_date=kwargs.get('end_date'))
     currencies_distribution = dict()
 
     for currency_data in (currency_data_1, currency_data_2):
@@ -79,9 +76,7 @@ def get_session_changes_over_time(currency_code: CurrencyCode, time_range: TimeR
     :param start_date: date in format '%YYYY-%mm-%dd' to specify first day of interest
     :param end_date: date in format '%YYYY-%mm-%dd' to specify last day of interest
     """
-    currency_distribution = _calc_sessions_differences(
-        get_avg_currency_rate(currency_code, time_range, start_date=kwargs.get('start_date'),
-                              end_date=kwargs.get('end_date')))
+    currency_distribution = _calc_sessions_differences(get_avg_currency_rate(currency_code, time_range, start_date=kwargs.get('start_date'), end_date=kwargs.get('end_date')))
     growth_counter = loss_counter = no_change_counter = 0
 
     for record in currency_distribution.values():
