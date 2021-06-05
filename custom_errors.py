@@ -1,3 +1,3 @@
-class Response404Error(Error):
-    """Raised when the input value is 404"""
-    pass
+class Response404Error(Exception):
+    def __init__(self):
+        pass

@@ -1,6 +1,6 @@
 from enum import IntEnum, auto
 from custom_errors import Response404Error
-
+from url_builder.url_builder import CurrencyCode, TimeRange, get_avg_currency_rate
 from url_builder.url_builder import CurrencyCode, TimeRange
 from analysis.analysis import get_session_changes_over_time, get_currency_statistical_measures, \
     get_currencies_rates_distribution

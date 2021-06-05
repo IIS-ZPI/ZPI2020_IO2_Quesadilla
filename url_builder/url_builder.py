@@ -103,12 +103,12 @@ def get_avg_currency_rate(currency_code: CurrencyCode, time_range: TimeRange, **
 
     url = f'{base_url}/{table_type.value}/{currency_code.value}/{start_date}/{end_date}{format_arg}'
 
-    return_value = requests.get(url).json()
+    return_url = requests.get(url)
 
-    if return_value == {}:
+    if return_url.status_code == 404:
         raise Response404Error
 
-    return return_value
+    return return_url.json()
 
 
 if __name__ == '__main__':
