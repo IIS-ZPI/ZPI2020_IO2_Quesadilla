@@ -2,6 +2,7 @@ import numpy as np
 from scipy import stats
 from typing import Dict, Tuple
 from url_builder.url_builder import CurrencyCode, TimeRange, get_avg_currency_rate
+from custom_errors import Response404Error
 
 
 def get_currency_statistical_measures(currency_code: CurrencyCode, time_range: TimeRange, **kwargs) -> Dict:
@@ -84,7 +85,8 @@ def get_currencies_rates_distribution(first_currency: CurrencyCode, second_curre
     return counters, x_values
 
 
-def get_session_changes_over_time(currency_code: CurrencyCode, time_range: TimeRange, bias=10 ** (-5), **kwargs) -> Tuple[int, int, int]:
+def get_session_changes_over_time(currency_code: CurrencyCode, time_range: TimeRange, bias=10 ** (-5), **kwargs) -> \
+Tuple[int, int, int]:
     """
     This function returns upward, downward and unchanged sessions counters
     :param currency_code: Code of currency to check
