@@ -2,6 +2,7 @@ import numpy as np
 from scipy import stats
 from typing import Dict, Tuple
 from url_builder.url_builder import CurrencyCode, TimeRange, get_avg_currency_rate
+from custom_errors import Response404Error
 
 
 def get_currency_statistical_measures(currency_code: CurrencyCode, time_range: TimeRange, **kwargs) -> Dict:
@@ -67,7 +68,8 @@ def get_currencies_rates_distribution(first_currency: CurrencyCode, second_curre
     return currencies_distribution
 
 
-def get_session_changes_over_time(currency_code: CurrencyCode, time_range: TimeRange, bias=10 ** (-5), **kwargs) -> Tuple[int, int, int]:
+def get_session_changes_over_time(currency_code: CurrencyCode, time_range: TimeRange, bias=10 ** (-5), **kwargs) -> \
+Tuple[int, int, int]:
     """
     This function returns upward, downward and unchanged sessions counters
     :param currency_code: Code of currency to check
@@ -130,9 +132,11 @@ if __name__ == '__main__':
         print(f'At day {date} currency changed come to {value:.2} %')
 
     print(f"Yen currency's upward, downward and unchanged session from {start_date} to {end_date}")
-    growth, loss, no_change = get_session_changes_over_time(CurrencyCode.YEN, None, start_date=start_date, end_date=end_date)
+    growth, loss, no_change = get_session_changes_over_time(CurrencyCode.YEN, None, start_date=start_date,
+                                                            end_date=end_date)
     print(f'Growth: {growth}, loss: {loss}, no change: {no_change}')
 
     print(f'Statistics from {start_date} to {end_date} of YEN')
-    for math_operation_name, value in get_currency_statistical_measures(CurrencyCode.YEN, None, start_date=start_date, end_date=end_date).items():
+    for math_operation_name, value in get_currency_statistical_measures(CurrencyCode.YEN, None, start_date=start_date,
+                                                                        end_date=end_date).items():
         print(f'{math_operation_name} = {value}')
