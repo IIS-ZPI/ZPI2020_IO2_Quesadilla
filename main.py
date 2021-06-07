@@ -1,4 +1,5 @@
 from enum import IntEnum, auto
+import matplotlib.pyplot as plt
 
 from url_builder.url_builder import CurrencyCode, TimeRange
 from analysis.analysis import get_session_changes_over_time, get_currency_statistical_measures, \
@@ -106,16 +107,18 @@ if __name__ == "__main__":
                                                         prompt=new_prompt)
 
                     distribution = get_currencies_rates_distribution(curr_code_1, curr_code_2, time)
+                    y, x_axis_labels = get_currencies_rates_distribution(curr_code_1, curr_code_2, time)
+                    x_linspace = [i for i in range(10)]
+                    plt.bar(x_linspace, y)
+                    for i, val in enumerate(x_axis_labels):
+                        x_axis_labels[i] = f"{val:.1}"
+                    plt.xticks(x_linspace, x_axis_labels)
+                    plt.title(f"{curr_code_1.value}/{curr_code_2.value}")
+                    plt.show()
                 except ValueError:
                     print('Waluty nie mogą być takie same!')
                     continue
                 break
-
-            for currency_name, currency_values in distribution.items():
-                print(f'Różnice kursowe {currency_name} przez ostatnie {time.value} dni')
-                for date, value in currency_values.items():
-                    print(f"{date} zmiana {'w górę' if value > 0. else 'w dół'} o {value:.2}%")
-
         else:
             print('Niepoprawna opcja! Proszę wybrać ponownie.')
     print("Wyłączenie systemu")
