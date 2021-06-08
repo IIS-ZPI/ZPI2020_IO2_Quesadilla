@@ -2,7 +2,6 @@ import numpy as np
 from scipy import stats
 from typing import Dict, Tuple
 from url_builder.url_builder import CurrencyCode, TimeRange, get_avg_currency_rate
-from custom_errors import Response404Error
 
 
 def get_currency_statistical_measures(currency_code: CurrencyCode, time_range: TimeRange, **kwargs) -> Dict:
