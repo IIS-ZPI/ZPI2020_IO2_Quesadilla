@@ -46,8 +46,10 @@ class AvgCurrencyRateTest(unittest.TestCase):
 			get_avg_currency_rate(CurrencyCode.AMERICAN_DOLLAR, None, start_date='2020-01-04', end_date='2020-01-05')
 		)
 
+class CurrenciesRatesDistTest(unittest.TestCase):
 	def test_get_currencies_rates_distribution_1(self):
-			pass
+			with self.assertRaises(ValueError):
+				get_currencies_rates_distribution(CurrencyCode.AMERICAN_DOLLAR, CurrencyCode.AMERICAN_DOLLAR, TimeRange.LAST_QUARTER)
 
 
 if __name__ == '__main__':
