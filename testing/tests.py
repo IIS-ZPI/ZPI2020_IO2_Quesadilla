@@ -57,6 +57,9 @@ def t1_get_currency_statistical_measures():
 
 	# print(res)
 
+def t1_get_currencies_rates_distribution():
+	pass
+
 def test_everything():
 	# t1_get_avg_currency_rate()
 	# t2_get_avg_currency_rate()
