@@ -41,6 +41,7 @@ class AvgCurrencyRateTest(unittest.TestCase):
 		self.assertEqual(res["rates"][1]["mid"], 3.8213)
 
 	def test_get_avg_currency_rate_5(self):
+
 		with self.assertRaises(Response404Error):
 			get_avg_currency_rate(CurrencyCode.AMERICAN_DOLLAR, None, start_date='2020-01-04', end_date='2020-01-05')
 
@@ -85,6 +86,11 @@ class SessionOverTimeTest(unittest.TestCase):
 		print(res)
 		up_down_none = (124, 127, 2)
 		self.assertEqual(res, up_down_none)
+
+class CurrenciesRatesDistTest(unittest.TestCase):
+	def test_get_currencies_rates_distribution_1(self):
+			with self.assertRaises(ValueError):
+				get_currencies_rates_distribution(CurrencyCode.AMERICAN_DOLLAR, CurrencyCode.AMERICAN_DOLLAR, TimeRange.LAST_QUARTER)
 
 
 if __name__ == '__main__':
