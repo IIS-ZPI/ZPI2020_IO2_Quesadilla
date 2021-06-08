@@ -41,10 +41,8 @@ class AvgCurrencyRateTest(unittest.TestCase):
 		self.assertEqual(res["rates"][1]["mid"], 3.8213)
 
 	def test_get_avg_currency_rate_5(self):
-		self.assertRaises(
-			Response404Error,
+		with self.assertRaises(Response404Error):
 			get_avg_currency_rate(CurrencyCode.AMERICAN_DOLLAR, None, start_date='2020-01-04', end_date='2020-01-05')
-		)
 
 
 if __name__ == '__main__':
