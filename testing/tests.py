@@ -45,5 +45,47 @@ class AvgCurrencyRateTest(unittest.TestCase):
 			get_avg_currency_rate(CurrencyCode.AMERICAN_DOLLAR, None, start_date='2020-01-04', end_date='2020-01-05')
 
 
+class StatisticalMeasuresTest(unittest.TestCase):
+	def test_if_empty(self):
+		with self.assertRaises(Response404Error):
+			get_currency_statistical_measures(CurrencyCode.AMERICAN_DOLLAR, None, start_date='2020-01-04', end_date='2020-01-05')
+
+	def test_usd_in_two_weeks(self):
+		res = get_currency_statistical_measures(CurrencyCode.AMERICAN_DOLLAR, None, start_date='2021-05-25', end_date='2021-06-08')
+		self.assertEqual(res.get('median'), 3.66905)
+		self.assertEqual(res.get('mode')[0], 3.6549)
+		self.assertEqual(res.get('std'), 0.012083480458874382)
+		self.assertEqual(res.get('cv'), 0.3290842615813386)
+
+	def test_yen_in_year(self):
+		res = get_currency_statistical_measures(CurrencyCode.YEN, None, start_date='2020-06-08', end_date='2021-06-08')
+		self.assertEqual(res.get('median'), 0.035598500000000005)
+		self.assertEqual(res.get('mode')[0], 0.035991)
+		self.assertEqual(res.get('std'), 0.000900877294990445)
+		self.assertEqual(res.get('cv'), 2.5255031372776733)
+
+
+class SessionOverTimeTest(unittest.TestCase):
+	def test_if_empty(self):
+		with self.assertRaises(Response404Error):
+			get_session_changes_over_time(CurrencyCode.AMERICAN_DOLLAR, None, start_date='2020-01-04', end_date='2020-01-05')
+
+	def test_aud_in_week(self):
+		res = get_session_changes_over_time(CurrencyCode.AMERICAN_DOLLAR, None, start_date='2021-06-01', end_date='2021-06-08')
+		up_down_none = (3, 1, 0)
+		self.assertEqual(res, up_down_none)
+
+	def test_euro_in_two_weeks(self):
+		res = get_session_changes_over_time(CurrencyCode.EURO, None, start_date='2021-05-25', end_date='2021-06-08')
+		up_down_none = (4, 5, 0)
+		self.assertEqual(res, up_down_none)
+
+	def test_chilean_peso_in_last_year(self):
+		res = get_session_changes_over_time(CurrencyCode.CHILEAN_PESO, None, start_date='2020-06-08', end_date='2021-06-08')
+		print(res)
+		up_down_none = (124, 127, 2)
+		self.assertEqual(res, up_down_none)
+
+
 if __name__ == '__main__':
 	unittest.main()
