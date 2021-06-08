@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 from enum import Enum, EnumMeta
 from typing import Dict
 import requests
+from custom_errors import Response404Error
 
 
 class ContainsEnum(EnumMeta):
@@ -101,7 +102,13 @@ def get_avg_currency_rate(currency_code: CurrencyCode, time_range: TimeRange, **
     start_date = kwargs.get('start_date') or (datetime.today() - timedelta(days=time_range.value)).strftime(date_format)
 
     url = f'{base_url}/{table_type.value}/{currency_code.value}/{start_date}/{end_date}{format_arg}'
-    return requests.get(url).json()
+
+    return_url = requests.get(url)
+
+    if return_url.status_code == 404:
+        raise Response404Error
+
+    return return_url.json()
 
 
 if __name__ == '__main__':

@@ -37,9 +37,10 @@ def _calc_sessions_differences(currency_data: Dict) -> Dict:
 
 
 def get_currencies_rates_distribution(first_currency: CurrencyCode, second_currency: CurrencyCode,
-                                      time_range: TimeRange, **kwargs) -> Dict:
+                                      time_range: TimeRange, interval_amount: int = 10, **kwargs) -> Dict:
     """
     This function calculates difference (in percentage %) from one session to another session for chosen currencies and
+     :param interval_amount: TODO(this)
      :param first_currency: Code of the very first currency
      :param second_currency: Code of second currency (must vary from the first one)
      :param time_range: Time between month and quarter
@@ -56,18 +57,35 @@ def get_currencies_rates_distribution(first_currency: CurrencyCode, second_curre
             raise ValueError(
                 f"Incorrect time range. Available range: <{TimeRange.LAST_MONTH}, {TimeRange.LAST_QUARTER}>")
 
-    currency_data_1 = get_avg_currency_rate(first_currency, time_range, start_date=kwargs.get('start_date'),
+    base_currency = get_avg_currency_rate(first_currency, time_range, start_date=kwargs.get('start_date'),
+                                          end_date=kwargs.get('end_date'))
+    quoted_currency = get_avg_currency_rate(second_currency, time_range, start_date=kwargs.get('start_date'),
                                             end_date=kwargs.get('end_date'))
-    currency_data_2 = get_avg_currency_rate(second_currency, time_range, start_date=kwargs.get('start_date'),
-                                            end_date=kwargs.get('end_date'))
-    currencies_distribution = dict()
 
-    for currency_data in (currency_data_1, currency_data_2):
-        currencies_distribution[currency_data.get('code')] = _calc_sessions_differences(currency_data)
-    return currencies_distribution
+    # E.g.: Value 2 means that one unit of base currency costs 2 units of second currency
+    base_quoted_index = []
+    for base, quoted in zip(base_currency.get('rates'), quoted_currency.get('rates')):
+        base_quoted_index.append(base.get('mid') / quoted.get('mid'))
+
+    differences = []
+    for curr, nxt in zip(base_quoted_index, base_quoted_index[1:]):
+        differences.append(nxt - curr)
+
+    # TODO: change name of this var
+    x_values = np.linspace(min(differences), max(differences), interval_amount)
+    counters = np.zeros(interval_amount)
+
+    for diff in differences:
+        for i, (low, high) in enumerate(zip(x_values, x_values[1:])):
+            if low <= diff <= high:
+                counters[i] += 1
+                break
+
+    return counters, x_values
 
 
-def get_session_changes_over_time(currency_code: CurrencyCode, time_range: TimeRange, bias=10 ** (-5), **kwargs) -> Tuple[int, int, int]:
+def get_session_changes_over_time(currency_code: CurrencyCode, time_range: TimeRange, bias=10 ** (-5), **kwargs) -> \
+Tuple[int, int, int]:
     """
     This function returns upward, downward and unchanged sessions counters
     :param currency_code: Code of currency to check
@@ -130,9 +148,11 @@ if __name__ == '__main__':
         print(f'At day {date} currency changed come to {value:.2} %')
 
     print(f"Yen currency's upward, downward and unchanged session from {start_date} to {end_date}")
-    growth, loss, no_change = get_session_changes_over_time(CurrencyCode.YEN, None, start_date=start_date, end_date=end_date)
+    growth, loss, no_change = get_session_changes_over_time(CurrencyCode.YEN, None, start_date=start_date,
+                                                            end_date=end_date)
     print(f'Growth: {growth}, loss: {loss}, no change: {no_change}')
 
     print(f'Statistics from {start_date} to {end_date} of YEN')
-    for math_operation_name, value in get_currency_statistical_measures(CurrencyCode.YEN, None, start_date=start_date, end_date=end_date).items():
+    for math_operation_name, value in get_currency_statistical_measures(CurrencyCode.YEN, None, start_date=start_date,
+                                                                        end_date=end_date).items():
         print(f'{math_operation_name} = {value}')

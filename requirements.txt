@@ -2,3 +2,4 @@ numpy>=1.19.3
 scipy>=1.5.4
 typing>=3.7.4.3
 requests>=2.24.0
+matplotlib>=3.3.3
